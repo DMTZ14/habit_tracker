@@ -1,6 +1,4 @@
-from time import process_time_ns
 from datetime import datetime, timedelta
-from models import Session,HabitTracker
 
 def total_minutes(sessions):
     totalmin=0
