@@ -7,17 +7,25 @@ from stats import (
 )
 import datetime
 """
+from multiprocessing.connection import deliver_challenge
 
 from models import Session, HabitTracker
 from validators import is_valid_date, is_valid_category
+from time import asctime,localtime
 
 
 def main():
     tracker = HabitTracker()
-
-    handle_add_session(tracker)
-
-
+    while True:
+        choice= menu()
+        print()
+        if choice =="1":
+            handle_add_session(tracker)
+        elif choice =="6":
+            print("Goobye!\n")
+            break
+        else:
+            print("Feature not yet implemented\n")
 def menu():
     print(
         "=== HabitForge: Habit Tracker ===\n"
@@ -32,14 +40,36 @@ def menu():
     )
     return input().strip()
 
+def todaysdate():
+    texto = asctime(localtime())
+    time = texto.split(" ")
+    months = {
+        "Jan": "01", "Feb": "02", "Mar": "03", "Apr": "04",
+        "May": "05", "Jun": "06", "Jul": "07", "Aug": "08",
+        "Sep": "09", "Oct": "10", "Nov": "11", "Dec": "12"
+    }
+    day = time[2]
+    month = months[time[1]]
+    year = time[4]
+    date = f"{year}-{month}-{day}"
+    return date
+
 
 def handle_add_session(tracker: HabitTracker):
     # Date
     while True:
-        date = input("Enter date (YYYY-MM-DD): ").strip()
-        if is_valid_date(date):
+        today= input("Is it today?\n"
+                     "1. Yes\n"
+                     "2. No\n"
+                     "Choose an option: ")
+        if today == "1":
+            date = todaysdate()
             break
-        print("Invalid date format. Use YYYY-MM-DD.\n")
+        elif today== "2":
+            date = input("Enter date (YYYY-MM-DD): ").strip()
+            if is_valid_date(date):
+                break
+            print("Invalid date format. Use YYYY-MM-DD.\n")
 
     # Habit
     while True:
@@ -74,7 +104,22 @@ def handle_add_session(tracker: HabitTracker):
     tracker.add_session(session)
     print("Session added successfully!\n")
 
+def todays_summary(tracker: HabitTracker):
+    ...
 
+def todaysdate():
+    texto = asctime(localtime())
+    time = texto.split(" ")
+    months = {
+        "Jan": "01", "Feb": "02", "Mar": "03", "Apr": "04",
+        "May": "05", "Jun": "06", "Jul": "07", "Aug": "08",
+        "Sep": "09", "Oct": "10", "Nov": "11", "Dec": "12"
+    }
+    day = time[2]
+    month = months[time[1]]
+    year = time[4]
+    date = f"{year}-{month}-{day}"
+    return date
 
 if __name__ == "__main__":
     main()
