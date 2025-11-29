@@ -107,19 +107,6 @@ def handle_add_session(tracker: HabitTracker):
 def todays_summary(tracker: HabitTracker):
     ...
 
-def todaysdate():
-    texto = asctime(localtime())
-    time = texto.split(" ")
-    months = {
-        "Jan": "01", "Feb": "02", "Mar": "03", "Apr": "04",
-        "May": "05", "Jun": "06", "Jul": "07", "Aug": "08",
-        "Sep": "09", "Oct": "10", "Nov": "11", "Dec": "12"
-    }
-    day = time[2]
-    month = months[time[1]]
-    year = time[4]
-    date = f"{year}-{month}-{day}"
-    return date
 
 if __name__ == "__main__":
     main()
