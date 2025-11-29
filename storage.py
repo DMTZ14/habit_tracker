@@ -1,7 +1,7 @@
 import csv
 import os
 DEFAULT_PATH = "data/sesiones.csv"
-
+HEADER = ['date', ' habit', ' category', ' minutes', ' note']
 def read_sessions(filepath: str = DEFAULT_PATH):
     if not os.path.exists(filepath):
         return []
@@ -25,6 +25,6 @@ def append_session(session, filepath: str = DEFAULT_PATH):
         writer=csv.writer(f)
         if not file_exists:
             writer.writerow(["date", "habit", "category", "minutes", "note"])
-        writer.writerow(session)
+        writer.writerow([session.date, session.habit, session.category,session.minutes, session.note])
 
 
