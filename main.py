@@ -14,15 +14,18 @@ def main():
       menu()
 
 def menu():
-    print("===HabitForge: Gestor de Hábitos===\n"
-          "1. Registrar nueva sesión\n"
-          "2. Ver resumen de hoy\n"
-          "3. Ver resumen por rango de fechas\n"
-          "4. Ver estadísticas globales\n"
-          "5. Exportar resumen a archivo\n"
-          "6. Salir\n"
-          "Selecciona una opción: ", end="")
-    return input()
+      print(
+            "=== HabitForge: Habit Tracker ===\n"
+            "1. Add new session\n"
+            "2. View today's summary\n"
+            "3. View summary by date range\n"
+            "4. View global statistics\n"
+            "5. Export summary to file\n"
+            "6. Exit\n"
+            "Choose an option: ",
+            end=""
+      )
+      return input().strip()
 
 
 if __name__ == "__main__":
