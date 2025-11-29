@@ -54,4 +54,24 @@ class HabitTracker:
     def get_all_sessions(self):
         return list(self.sessions)
 
+    def get_sessions_by_date(self, date: str):
+        if not is_valid_date(date):
+            raise ValueError("Invalid date.")
+
+        sessionsdated= []
+        for i in self.sessions:
+            if i.date == date:
+                sessionsdated.append(i)
+        return sessionsdated
+
+    def get_sessions_by_range(self, start_date: str, end_date: str):
+        if not is_valid_date(start_date) or not is_valid_date(end_date):
+            raise ValueError("Invalid date. ")
+        if start_date > end_date:
+            raise ValueError("Start date must be <= end date.")
+        sessionsdated = []
+        for i in self.sessions:
+            if start_date <= i.date <= end_date:
+                sessionsdated.append(i)
+        return sessionsdated
 
