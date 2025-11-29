@@ -51,5 +51,7 @@ class HabitTracker:
         self.sessions.append(session)
         append_session(session)
 
+    def get_all_sessions(self):
+        return list(self.sessions)
 
 
