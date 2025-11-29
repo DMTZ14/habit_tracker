@@ -7,11 +7,9 @@ from stats import (
 )
 import datetime
 """
-from multiprocessing.connection import deliver_challenge
-
 from models import Session, HabitTracker
 from validators import is_valid_date, is_valid_category
-from time import asctime,localtime
+from datetime import date
 
 
 def main():
@@ -21,11 +19,14 @@ def main():
         print()
         if choice =="1":
             handle_add_session(tracker)
+        elif choice =="2":
+            todays_summary(tracker)
         elif choice =="6":
             print("Goobye!\n")
             break
         else:
             print("Feature not yet implemented\n")
+
 def menu():
     print(
         "=== HabitForge: Habit Tracker ===\n"
@@ -40,20 +41,8 @@ def menu():
     )
     return input().strip()
 
-def todaysdate():
-    texto = asctime(localtime())
-    time = texto.split(" ")
-    months = {
-        "Jan": "01", "Feb": "02", "Mar": "03", "Apr": "04",
-        "May": "05", "Jun": "06", "Jul": "07", "Aug": "08",
-        "Sep": "09", "Oct": "10", "Nov": "11", "Dec": "12"
-    }
-    day = time[2]
-    month = months[time[1]]
-    year = time[4]
-    date = f"{year}-{month}-{day}"
-    return date
-
+def todaysdate() -> str:
+    return date.today().isoformat()
 
 def handle_add_session(tracker: HabitTracker):
     # Date
@@ -105,8 +94,7 @@ def handle_add_session(tracker: HabitTracker):
     print("Session added successfully!\n")
 
 def todays_summary(tracker: HabitTracker):
-    ...
-
+   ...
 
 if __name__ == "__main__":
     main()
