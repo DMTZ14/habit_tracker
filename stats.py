@@ -35,13 +35,26 @@ def get_global_stats(sessions):
     global_stats= {}
     global_stats["total_minutes"]= total_minutes(sessions)
     global_stats["total_sessions"]= len(sessions)
-    global_stats["avg_minutes"]= int(round(total_minutes(sessions)/len(sessions),0))
     global_stats["minutes_by_category"] = get_minutes_by_category(sessions)
-    global_stats["top_habit"]= get_top_habits(sessions,1)[0]
+
+    #Empty list validation
+    if sessions:
+        avg = int(round(total_minutes(sessions) / len(sessions), 0))
+        top = get_top_habits(sessions, 1)[0]
+    else:
+        avg = 0
+        top = None
+
+    global_stats["avg_minutes"] = avg
+    global_stats["top_habit"] = top
+
 
     return global_stats
 
 def best_streak(sessions):
+    if not sessions:
+        return 0
+
     dates = sorted(set(s.date for s in sessions))
     parsed = [datetime.strptime(d, "%Y-%m-%d").date() for d in dates]
 
