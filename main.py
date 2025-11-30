@@ -30,7 +30,7 @@ def main():
         elif choice =="4":
             handle_global_statistics(tracker)
         elif choice=="5":
-            handle_export_summary()
+            handle_export_summary(tracker)
         elif choice =="6":
             print("Goobye!\n")
             break
@@ -164,9 +164,35 @@ def handle_global_statistics(tracker: HabitTracker):
     #Best streak
     print(f"Best streak: {best_streak(all_sessions)} days\n")
 
-def handle_export_summary():
-    print("Handle export summary.")
+def handle_export_summary(tracker: HabitTracker):
+    #start_date= input("Enter start date YYYY-MM-DD: ")
+    #end_date = input("Enter end date YYYY-MM-DD: ")
+    start_date= "2025-11-26"
+    end_date= "2025-11-30"
+    file_name= f"reports/report_{start_date}_{end_date}.txt"
+    with open(file_name,"w") as file:
+        all_sessions = tracker.get_all_sessions()
+        if not all_sessions:
+            file.write("No sessions recorded yet.")
+        file.write(f"HabitForge – Summary Report\n"
+                   f"Range: {start_date} to {end_date}\n\n")
 
+        # Habits & minutes
+        ranged_min_by_habit = get_minutes_by_habit(all_sessions)
+        for i in ranged_min_by_habit:
+            file.write(f"{str(i).title()}: {ranged_min_by_habit[i]} min\n")
+
+        # Top Habits
+        file.write("\nTop 3 habits:\n")
+        ranged_top_habits = get_top_habits(all_sessions)
+        for i in ranged_top_habits:
+            ind = 1
+            session = list(i)
+            file.write(f"{ind}) {str(session[0]).title()} - {session[1]} min\n")
+
+        file.write(f"\nTotal in range: {total_minutes(all_sessions)} minutes.\n")
+
+    print(f"Report saved to: reports/report_{start_date}_{end_date}.txt")
 
 
 if __name__ == "__main__":
