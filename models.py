@@ -49,7 +49,7 @@ class HabitTracker:
 
     def add_session(self, session: Session):
         self.sessions.append(session)
-        append_session(session)
+        append_session(session, self.filepath)
 
     def get_all_sessions(self):
         return list(self.sessions)
