@@ -206,7 +206,7 @@ def handle_export_summary(tracker: HabitTracker):
 
         file.write(f"\nTotal in range: {total_minutes(all_sessions)} minutes.\n")
 
-    print(f"Report saved to: reports/report_{start_date}_{end_date}.txt")
+    print(f"Report saved to: reports/report_{start_date}_{end_date}.txt\n")
 
 
 if __name__ == "__main__":
