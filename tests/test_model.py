@@ -1,17 +1,17 @@
-import pytest
 from models import Session
+import pytest
 
-def test_create_session():
-    s = Session("2025-11-30","Meditar","other",30,"")
-    assert s.date =="2025-11-30"
-    assert s.habit == "Meditar"
-    assert s.category =="other"
-    assert s.minutes == 30
-    assert s.note == ""
+def test_create_valid_session():
+    s = Session("2025-12-01", "Python", "study", 60, "CS50P")
+    assert s.date == "2025-12-01"
+    assert s.habit == "Python"
+    assert s.category == "study"
+    assert s.minutes == 60
+    assert s.note == "CS50P"
 
-def test_invalid_date():
+def test_invalid_date_raises():
     with pytest.raises(ValueError):
-        Session("2025-13-400", "Python", "study", 60, "")
+        Session("2025-13-40", "Python", "study", 60, "")
 
 def test_empty_habit_raises():
     with pytest.raises(ValueError):
