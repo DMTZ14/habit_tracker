@@ -7,7 +7,11 @@ from stats import (
 )
 import datetime
 """
+from fontTools.misc.plistlib import end_date
+
 from models import Session, HabitTracker
+from stats import total_minutes, get_minutes_by_habit, get_top_habits, get_global_stats, get_minutes_by_category, \
+    best_streak
 from validators import is_valid_date, is_valid_category
 from datetime import date
 
@@ -20,10 +24,18 @@ def main():
         if choice =="1":
             handle_add_session(tracker)
         elif choice =="2":
-            todays_summary(tracker)
+            handle_todays_summary(tracker)
+        elif choice =="3":
+            handle_range_summary(tracker)
+        elif choice =="4":
+            handle_global_statistics(tracker)
+        elif choice=="5":
+            handle_export_summary()
         elif choice =="6":
             print("Goobye!\n")
             break
+        elif choice not in range(6):
+            print("=== Choice out of range ===\n")
         else:
             print("Feature not yet implemented\n")
 
@@ -62,7 +74,7 @@ def handle_add_session(tracker: HabitTracker):
 
     # Habit
     while True:
-        habit = input("Habit name: ").strip()
+        habit = input("Habit name: ").strip().capitalize()
         if habit:
             break
         print("Habit can't be empty, try again.\n")
@@ -93,8 +105,69 @@ def handle_add_session(tracker: HabitTracker):
     tracker.add_session(session)
     print("Session added successfully!\n")
 
-def todays_summary(tracker: HabitTracker):
-   ...
+def handle_todays_summary(tracker: HabitTracker):
+    today = todaysdate()
+    todays_sessions=tracker.get_sessions_by_date(today)
+    print(f"=== Today's Summary ({today}) ===")
+
+    for i in todays_sessions:
+        print(f"{i.habit.title()} ({i.category}): {i.minutes} min.")
+
+    print(f"\nTotal today: {total_minutes(tracker.get_sessions_by_date(today))}\n")
+
+def handle_range_summary(tracker: HabitTracker):
+    start_date= input("Enter start date YYYY-MM-DD: ")
+    end_date = input("Enter end date YYYY-MM-DD: ")
+
+    range_sessions = tracker.get_sessions_by_range(start_date, end_date)
+    print(f"=== Summary from {start_date} to {end_date} ===\n")
+
+    #Habits & minutes
+    ranged_min_by_habit= get_minutes_by_habit(range_sessions)
+    for i in ranged_min_by_habit:
+        print(f"{str(i).title()}: {ranged_min_by_habit[i]} min")
+    print()
+    #Top Habits
+    print("Top 3 habits:")
+    ranged_top_habits = get_top_habits(range_sessions)
+    for i in ranged_top_habits:
+        ind=1
+        session = list(i)
+        print(f"{ind}) {str(session[0]).title()} - {session[1]} min")
+    print()
+
+    print(f"Total in range: {total_minutes(range_sessions)} minutes.\n")
+
+def handle_global_statistics(tracker: HabitTracker):
+    all_sessions= tracker.get_all_sessions()
+    if not all_sessions:
+        print("No sessions recorded yet.")
+    print("=== Global Statistics ===")
+    #Global stats
+    global_stats = get_global_stats(all_sessions)
+    print(f"Total sessions: {global_stats["total_sessions"]}\n"
+    f"Total minutes: {global_stats["total_minutes"]}\n"
+    f"Average minutes by session: {global_stats["avg_minutes"]}\n")
+
+    #Minutes by category
+    print("Minutes by category")
+    min_by_cat= get_minutes_by_category(all_sessions)
+    for i in min_by_cat:
+        print(f"{str(i).title()}: {min_by_cat[i]}")
+    print()
+
+    #Top Habit
+    print("Top habit")
+    top_habit= list(get_top_habits(all_sessions,1)[0])
+    print(f"{str(top_habit[0]).title()} - {top_habit[1]} min\n")
+
+    #Best streak
+    print(f"Best streak: {best_streak(all_sessions)} days\n")
+
+def handle_export_summary():
+    print("Handle export summary.")
+
+
 
 if __name__ == "__main__":
     main()
