@@ -1,7 +1,7 @@
 import csv
 import os
 DEFAULT_PATH = "data/sesiones.csv"
-HEADER = ['date', ' habit', ' category', ' minutes', ' note']
+HEADER = ["date", "habit", "category", "minutes", "note"]
 def read_sessions(filepath: str = DEFAULT_PATH):
     if not os.path.exists(filepath):
         return []
@@ -11,7 +11,7 @@ def read_sessions(filepath: str = DEFAULT_PATH):
         for i, row in enumerate(reader):
             if not row:
                 continue
-            if i == 0 and row == ["date", "habit", "category", "minutes", "note"]:
+            if i == 0 and row == HEADER:
                 continue
             rows.append(row)
     return rows
@@ -24,7 +24,7 @@ def append_session(session, filepath: str = DEFAULT_PATH):
     with open(filepath,"a",newline="") as f:
         writer=csv.writer(f)
         if not file_exists:
-            writer.writerow(["date", "habit", "category", "minutes", "note"])
+            writer.writerow(HEADER)
         writer.writerow([session.date, session.habit, session.category,session.minutes, session.note])
 
 
