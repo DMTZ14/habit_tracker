@@ -15,4 +15,4 @@ __pycache__/
 # Datos locales (si quieres que no se suban)
 data/
 reports/
-data-sesiones.csv
+data/sesiones.csv

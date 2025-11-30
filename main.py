@@ -1,19 +1,9 @@
-"""
-from stats import (
-    get_minutes_by_habit,
-    get_minutes_by_category,
-    get_top_habits,
-    get_global_stats,
-)
-import datetime
-"""
-from fontTools.misc.plistlib import end_date
-
 from models import Session, HabitTracker
 from stats import total_minutes, get_minutes_by_habit, get_top_habits, get_global_stats, get_minutes_by_category, \
     best_streak
 from validators import is_valid_date, is_valid_category
 from datetime import date
+import os
 
 
 def main():
@@ -34,10 +24,8 @@ def main():
         elif choice =="6":
             print("Goobye!\n")
             break
-        elif choice not in range(6):
-            print("=== Choice out of range ===\n")
         else:
-            print("Feature not yet implemented\n")
+            print("=== Choice out of range ===\n")
 
 def menu():
     print(
@@ -108,18 +96,32 @@ def handle_add_session(tracker: HabitTracker):
 def handle_todays_summary(tracker: HabitTracker):
     today = todaysdate()
     todays_sessions=tracker.get_sessions_by_date(today)
+    if not todays_sessions:
+        print(f"No sessions found for today ({today}).\n")
+        return
+
     print(f"=== Today's Summary ({today}) ===")
 
     for i in todays_sessions:
         print(f"{i.habit.title()} ({i.category}): {i.minutes} min.")
 
-    print(f"\nTotal today: {total_minutes(tracker.get_sessions_by_date(today))}\n")
+    print(f"\nTotal today: {total_minutes(todays_sessions)}\n")
 
 def handle_range_summary(tracker: HabitTracker):
-    start_date= input("Enter start date YYYY-MM-DD: ")
-    end_date = input("Enter end date YYYY-MM-DD: ")
+    start_date= input("Enter start date YYYY-MM-DD: ").strip()
+    end_date = input("Enter end date YYYY-MM-DD: ").strip()
 
-    range_sessions = tracker.get_sessions_by_range(start_date, end_date)
+    #Validate dates format
+    try:
+        range_sessions = tracker.get_sessions_by_range(start_date, end_date)
+    except ValueError as e:
+        print(f"Error: {e}\n")
+        return
+    #Validate sessions exist
+    if not range_sessions:
+        print(f"No sessions found between {start_date} and {end_date}.\n")
+        return
+
     print(f"=== Summary from {start_date} to {end_date} ===\n")
 
     #Habits & minutes
@@ -130,10 +132,11 @@ def handle_range_summary(tracker: HabitTracker):
     #Top Habits
     print("Top 3 habits:")
     ranged_top_habits = get_top_habits(range_sessions)
+    ind=1
     for i in ranged_top_habits:
-        ind=1
         session = list(i)
         print(f"{ind}) {str(session[0]).title()} - {session[1]} min")
+        ind+=1
     print()
 
     print(f"Total in range: {total_minutes(range_sessions)} minutes.\n")
@@ -142,13 +145,15 @@ def handle_global_statistics(tracker: HabitTracker):
     all_sessions= tracker.get_all_sessions()
     if not all_sessions:
         print("No sessions recorded yet.")
+        return
     print("=== Global Statistics ===")
     #Global stats
     global_stats = get_global_stats(all_sessions)
-    print(f"Total sessions: {global_stats["total_sessions"]}\n"
-    f"Total minutes: {global_stats["total_minutes"]}\n"
-    f"Average minutes by session: {global_stats["avg_minutes"]}\n")
-
+    print(
+        f"Total sessions: {global_stats['total_sessions']}\n"
+        f"Total minutes: {global_stats['total_minutes']}\n"
+        f"Average minutes by session: {global_stats['avg_minutes']}\n"
+    )
     #Minutes by category
     print("Minutes by category")
     min_by_cat= get_minutes_by_category(all_sessions)
@@ -165,15 +170,23 @@ def handle_global_statistics(tracker: HabitTracker):
     print(f"Best streak: {best_streak(all_sessions)} days\n")
 
 def handle_export_summary(tracker: HabitTracker):
-    #start_date= input("Enter start date YYYY-MM-DD: ")
-    #end_date = input("Enter end date YYYY-MM-DD: ")
-    start_date= "2025-11-26"
-    end_date= "2025-11-30"
+    start_date= input("Enter start date YYYY-MM-DD: ")
+    end_date = input("Enter end date YYYY-MM-DD: ")
+    os.makedirs("reports", exist_ok=True)
     file_name= f"reports/report_{start_date}_{end_date}.txt"
+
+    try:
+        all_sessions = tracker.get_sessions_by_range(start_date, end_date)
+    except ValueError as e:
+        print(f"Error: {e}\n")
+        return
+
+    #Validate sessions exist
+    if not all_sessions:
+        print(f"No sessions found between {start_date} and {end_date}. Report not created.\n")
+        return
+
     with open(file_name,"w") as file:
-        all_sessions = tracker.get_all_sessions()
-        if not all_sessions:
-            file.write("No sessions recorded yet.")
         file.write(f"HabitForge – Summary Report\n"
                    f"Range: {start_date} to {end_date}\n\n")
 
@@ -185,10 +198,11 @@ def handle_export_summary(tracker: HabitTracker):
         # Top Habits
         file.write("\nTop 3 habits:\n")
         ranged_top_habits = get_top_habits(all_sessions)
+        ind = 1
         for i in ranged_top_habits:
-            ind = 1
             session = list(i)
             file.write(f"{ind}) {str(session[0]).title()} - {session[1]} min\n")
+            ind+=1
 
         file.write(f"\nTotal in range: {total_minutes(all_sessions)} minutes.\n")
 
