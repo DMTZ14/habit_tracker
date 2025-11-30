@@ -1,5 +1,5 @@
 from validators import is_valid_category, is_valid_date
-from storage import append_session, read_sessions, DEFAULT_PATH, HEADER
+from storage import append_session, read_sessions, DEFAULT_PATH
 
 class Session:
     def __init__(self, date: str, habit: str, category: str, minutes: int, note: str = ""):
